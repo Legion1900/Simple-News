@@ -9,6 +9,18 @@ import android.os.Parcelable;
 * */
 public class Article implements Parcelable {
 
+    public static final Creator<Article> CREATOR = new Creator<Article>() {
+        @Override
+        public Article createFromParcel(Parcel in) {
+            return new Article(in);
+        }
+
+        @Override
+        public Article[] newArray(int size) {
+            return new Article[size];
+        }
+    };
+
     private String author;
     private String title;
     /*
@@ -46,17 +58,25 @@ public class Article implements Parcelable {
         description = in.readString();
     }
 
-    public static final Creator<Article> CREATOR = new Creator<Article>() {
-        @Override
-        public Article createFromParcel(Parcel in) {
-            return new Article(in);
-        }
+    public String getAuthor() {
+        return author;
+    }
 
-        @Override
-        public Article[] newArray(int size) {
-            return new Article[size];
-        }
-    };
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPublishedAt() {
+        return publishedAt;
+    }
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public int describeContents() {
