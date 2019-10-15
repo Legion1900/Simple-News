@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Simple News</string>
     <string name="action_settings">Settings</string>
+    <string name="author_default">Author:</string>
+    <string name="titile_default">Titile:</string>
+    <string name="publishedAt_default">Published:</string>
 </resources>
