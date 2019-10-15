@@ -52,6 +52,7 @@ public class ArticleActivity extends AppCompatActivity {
             title.setText(titleText);
             source.setText(sourceText);
             description.setText(descriptionText);
+            getSupportActionBar().setTitle(article.getTitle());
         }
     }
 }

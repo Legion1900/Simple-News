@@ -30,6 +30,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    static final String STUB = "Software";
+
     private NewsGetter getter;
 
     private NewsAdapter rvAdapter;
@@ -41,12 +43,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(STUB);
 
         initRecyclerView();
         initNewsGetter();
-//        TODO: set toolbar title to current topic
 //        TODO: add String getCurrentDate() method
-        getter.query("software", "2019-10-15");
+        getter.query(STUB.toLowerCase(), "2019-10-15");
     }
 
     private void initNewsGetter() {
