@@ -11,20 +11,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.legion1900.simplenews.R;
 import com.legion1900.simplenews.networking.data.Article;
+import com.legion1900.simplenews.utils.TextUtils;
 
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
 
     private List<Article> news;
-
     private StringBuilder builder = new StringBuilder();
-
     private Resources r;
+    private View.OnClickListener itemClickListener;
 
-    public NewsAdapter(Resources r, List<Article> news) {
+    public NewsAdapter(Resources r, List<Article> news, View.OnClickListener itemClickListener) {
         this.news = news;
         this.r = r;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -32,16 +33,22 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
     public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.rv_item, parent, false);
+        itemView.setOnClickListener(itemClickListener);
         return new ArticleViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
         Article article = news.get(position);
-        String author = buildText(r.getString(R.string.author_default), article.getAuthor());
-        String title = buildText(r.getString(R.string.titile_default), article.getTitle());
-        String publishedAt =
-                buildText(r.getString(R.string.publishedAt_default), article.getPublishedAt());
+        String author = TextUtils.buildFieldValue(
+                r.getString(R.string.author_default), article.getAuthor()
+        );
+        String title = TextUtils.buildFieldValue(
+                r.getString(R.string.title_default), article.getTitle()
+        );
+        String publishedAt = TextUtils.buildFieldValue(
+                r.getString(R.string.publishedAt_default), article.getPublishedAt()
+        );
         holder.author.setText(author);
         holder.title.setText(title);
         holder.publishedAt.setText(publishedAt);
@@ -57,14 +64,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
         notifyDataSetChanged();
     }
 
-    private String buildText(String fieldTitle, String value) {
-        /*
-        * StringBuilder clean up.
-        * */
-        builder.setLength(0);
-        builder.append(fieldTitle);
-        builder.append(value);
-        return builder.toString();
+    public Article getArticle(int position) {
+        return news.get(position);
     }
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
@@ -72,7 +73,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
         final TextView title;
         final TextView publishedAt;
 
-        public ArticleViewHolder(@NonNull View itemView) {
+        ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
             author = itemView.findViewById(R.id.tv_author);
             title = itemView.findViewById(R.id.tv_title);
