@@ -1,4 +1,4 @@
-package com.legion1900.simplenews.data;
+package com.legion1900.simplenews.networking.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

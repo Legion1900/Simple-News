@@ -1,6 +1,6 @@
-package com.legion1900.simplenews;
+package com.legion1900.simplenews.networking;
 
-import com.legion1900.simplenews.data.News;
+import com.legion1900.simplenews.networking.data.News;
 
 import java.util.Map;
 
