@@ -3,6 +3,10 @@ package com.legion1900.simplenews.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
+/*
+* This is just an item in array of "articles"
+* */
 public class Article implements Parcelable {
 
     private String author;
@@ -34,7 +38,7 @@ public class Article implements Parcelable {
         this.description = description;
     }
 
-    protected Article(Parcel in) {
+    private Article(Parcel in) {
         author = in.readString();
         title = in.readString();
         publishedAt = in.readString();
