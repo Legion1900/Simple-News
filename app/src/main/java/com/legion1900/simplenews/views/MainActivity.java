@@ -2,6 +2,7 @@ package com.legion1900.simplenews.views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,7 +18,9 @@ import com.legion1900.simplenews.networking.data.Article;
 import com.legion1900.simplenews.networking.data.News;
 import com.legion1900.simplenews.views.adapters.NewsAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -30,7 +33,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    static final String STUB = "Software";
+    private static final String STUB = "Software";
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-mm-dd");
+
 
     private NewsGetter getter;
 
@@ -47,8 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         initRecyclerView();
         initNewsGetter();
-//        TODO: add String getCurrentDate() method
-        getter.query(STUB.toLowerCase(), "2019-10-15");
+        getter.query(STUB.toLowerCase(), getCurrentDate());
     }
 
     private void initNewsGetter() {
@@ -94,5 +98,10 @@ public class MainActivity extends AppCompatActivity {
         });
         rvNews.setLayoutManager(new LinearLayoutManager(this));
         rvNews.setAdapter(rvAdapter);
+    }
+
+    private String getCurrentDate() {
+        Date today = new Date();
+        return FORMAT.format(today);
     }
 }
