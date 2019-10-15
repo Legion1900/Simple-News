@@ -1,24 +1,36 @@
-package com.legion1900.simplenews;
+package com.legion1900.simplenews.views;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.legion1900.simplenews.BuildConfig;
+import com.legion1900.simplenews.R;
 import com.legion1900.simplenews.networking.NewsGetter;
 import com.legion1900.simplenews.networking.data.Article;
 import com.legion1900.simplenews.networking.data.News;
+import com.legion1900.simplenews.views.adapters.NewsAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
+
+/*
+* TODO: pull to refresh should accept q=topic as a parameter so that the last part could reuse same method
+* */
+
+/*
+* TODO: read notes about dialog
+*  */
 
 public class MainActivity extends AppCompatActivity {
 
     private NewsGetter getter;
 
-    private TextView result;
+    private NewsAdapter rvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        result = findViewById(R.id.result);
         initNewsGetter();
         getter.query("software", "2019-10-15");
     }
@@ -46,32 +57,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onQueryResult(News news) {
                 ArrayList<Article> articles = news.getArticles();
-                String title = "Title: ";
-                String author = "Author: ";
-                String publishedAt = "Published: ";
-                String sourceName = "Publisher: ";
-                String separator = "\n";
-                Log.d("Test", articles.size() + "");
-                StringBuilder builder = new StringBuilder();
-                for (Article article : articles) {
-                    builder.append(title);
-                    builder.append(article.getTitle());
-                    builder.append(separator);
-                    builder.append(author);
-                    builder.append(article.getAuthor());
-                    builder.append(separator);
-                    builder.append(publishedAt);
-                    builder.append(article.getPublishedAt());
-                    builder.append(separator);
-                    builder.append(sourceName);
-                    builder.append(article.getSourceName());
-                    builder.append(separator);
-                    builder.append(article.getDescription());
-                    builder.append(separator);
-                    builder.append(separator);
-                    builder.append(separator);
-                }
-                result.setText(builder.toString());
+                if (rvAdapter == null)
+                    initRecyclerView(articles);
+                else rvAdapter.changeDataSet(articles);
             }
 
             @Override
@@ -83,5 +71,15 @@ public class MainActivity extends AppCompatActivity {
                 ).show();
             }
         };
+    }
+
+    /*
+    * Builds new NewsAdapter and rebinds it to a RecyclerView.
+    * */
+    private void initRecyclerView(List<Article> news) {
+        RecyclerView rv = findViewById(R.id.rv_news);
+        rvAdapter = new NewsAdapter(getResources(), news);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(rvAdapter);
     }
 }
