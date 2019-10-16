@@ -1,5 +1,12 @@
 package com.legion1900.simplenews.utils;
 
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.internal.EverythingIsNonNull;
+
 public class TextUtils {
     private static final StringBuilder builder = new StringBuilder();
 

@@ -36,18 +36,22 @@ public class Article implements Parcelable {
     * */
     private String description;
 
+    private String urlToImage;
+
     public Article(
             String author,
             String title,
             String publishedAt,
             String sourceName,
-            String description
+            String description,
+            String urlToImage
     ) {
         this.author = author;
         this.title = title;
         this.publishedAt = publishedAt;
         this.sourceName = sourceName;
         this.description = description;
+        this.urlToImage = urlToImage;
     }
 
     private Article(Parcel in) {
@@ -56,6 +60,7 @@ public class Article implements Parcelable {
         publishedAt = in.readString();
         sourceName = in.readString();
         description = in.readString();
+        urlToImage = in.readString();
     }
 
     public String getAuthor() {
@@ -78,6 +83,10 @@ public class Article implements Parcelable {
         return description;
     }
 
+    public String getUrlToImage() {
+        return urlToImage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -90,5 +99,6 @@ public class Article implements Parcelable {
         parcel.writeString(publishedAt);
         parcel.writeString(sourceName);
         parcel.writeString(description);
+        parcel.writeString(urlToImage);
     }
 }
