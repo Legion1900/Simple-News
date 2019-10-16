@@ -15,7 +15,7 @@ import com.legion1900.simplenews.BuildConfig;
 import com.legion1900.simplenews.R;
 import com.legion1900.simplenews.networking.NewsGetter;
 import com.legion1900.simplenews.networking.data.Article;
-import com.legion1900.simplenews.networking.data.News;
+import com.legion1900.simplenews.networking.data.NewsResponse;
 import com.legion1900.simplenews.views.adapters.NewsAdapter;
 
 import java.text.SimpleDateFormat;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onQueryResult(News news) {
+            protected void onQueryResult(NewsResponse news) {
                 ArrayList<Article> articles = news.getArticles();
                 rvAdapter.changeDataSet(articles);
                 prepareUi(false);

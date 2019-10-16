@@ -1,6 +1,6 @@
 package com.legion1900.simplenews.networking;
 
-import com.legion1900.simplenews.networking.data.News;
+import com.legion1900.simplenews.networking.data.NewsResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public abstract class NewsGetter {
     private static final String VALUE_SORT = "publishedAt";
 
     private NewsService newsService;
-    private Callback<News> callback;
+    private Callback<NewsResponse> callback;
     private final String apiKey;
 
     public NewsGetter(String apiKey) {
@@ -33,16 +33,16 @@ public abstract class NewsGetter {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         newsService = retrofit.create(NewsService.class);
-        callback = new Callback<News>() {
+        callback = new Callback<NewsResponse>() {
             @Override
             @EverythingIsNonNull
-            public void onResponse(Call<News> call, Response<News> response) {
+            public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
                 onQueryResult(response.body());
             }
 
             @Override
             @EverythingIsNonNull
-            public void onFailure(Call<News> call, Throwable t) {
+            public void onFailure(Call<NewsResponse> call, Throwable t) {
                 NewsGetter.this.onFailure(t);
             }
         };
@@ -56,7 +56,7 @@ public abstract class NewsGetter {
         query.put(KEY_API_KEY, apiKey);
 
         onQueryStart();
-        Call<News> news = newsService.queryNews(query);
+        Call<NewsResponse> news = newsService.queryNews(query);
         news.enqueue(callback);
     }
 
@@ -69,7 +69,7 @@ public abstract class NewsGetter {
      * Method that should be overridden to update UI with results
      * views - views to be updated with result.
      * */
-    protected abstract void onQueryResult(News news);
+    protected abstract void onQueryResult(NewsResponse newsResponse);
 
     protected abstract void onFailure(Throwable t);
 }
