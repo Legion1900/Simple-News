@@ -3,7 +3,6 @@ package com.legion1900.simplenews.views;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
         getter = new NewsGetter(BuildConfig.apiKey) {
             @Override
             protected void onQueryStart() {
-                updateUI(true);
+                prepareUi(true);
             }
 
             @Override
             protected void onQueryResult(News news) {
                 ArrayList<Article> articles = news.getArticles();
                 rvAdapter.changeDataSet(articles);
-                updateUI(false);
+                prepareUi(false);
             }
 
             @Override
@@ -92,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                         "Connection error",
                         Toast.LENGTH_LONG
                 ).show();
+                prepareUi(false);
             }
         };
     }
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         return FORMAT.format(today);
     }
 
-    private void updateUI(boolean isLoading) {
+    private void prepareUi(boolean isLoading) {
         if (isLoading) {
             rvNews.setVisibility(View.GONE);
         } else {
