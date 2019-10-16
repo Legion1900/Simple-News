@@ -22,7 +22,7 @@ public class ConnectionErrorDialog extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         MainActivity activity = (MainActivity) getActivity();
                         if (activity != null) {
-                            activity.queryNews();
+                            activity.onDialogPositiveClick();
                             dismiss();
                         }
                     }

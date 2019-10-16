@@ -17,12 +17,12 @@ import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
 
-    private List<Article> news;
+    private List<Article> articles;
     private Resources r;
     private View.OnClickListener itemClickListener;
 
-    public NewsAdapter(Resources r, List<Article> news, View.OnClickListener itemClickListener) {
-        this.news = news;
+    public NewsAdapter(Resources r, List<Article> articles, View.OnClickListener itemClickListener) {
+        this.articles = articles;
         this.r = r;
         this.itemClickListener = itemClickListener;
     }
@@ -38,7 +38,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
-        Article article = news.get(position);
+        Article article = articles.get(position);
         String author = TextUtils.buildFieldValue(
                 r.getString(R.string.author_default), article.getAuthor()
         );
@@ -55,17 +55,21 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
 
     @Override
     public int getItemCount() {
-        return news.size();
+        return articles.size();
     }
 
     public void changeDataSet(List<Article> newData) {
-        news.clear();
-        news.addAll(newData);
+        articles.clear();
+        articles.addAll(newData);
         notifyDataSetChanged();
     }
 
-    public Article getArticle(int position) {
-        return news.get(position);
+    public Article getArticleOnPosition(int position) {
+        return articles.get(position);
+    }
+
+    public List<Article> getArticles() {
+        return articles;
     }
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {

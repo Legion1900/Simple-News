@@ -1,16 +1,13 @@
 package com.legion1900.simplenews.views.activities;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
@@ -34,7 +31,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String STUB = "Software";
+    private static final String TAG = "com.legion1900.simplenews";
+
+    private static final String KEY_NEWS = "Articles";
+    private static final String KEY_DIALOG = "Is Dialog";
+
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-mm-dd");
 
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner;
 
     private DialogFragment connErrDialog = new ConnectionErrorDialog();
+    private boolean isDialog = false;
 
     private String currentTopic;
 
@@ -55,15 +57,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(STUB);
-        swipeContainer = findViewById(R.id.swipeContainer);
 
         initSpinner();
         initSwipeRefresh();
         initRecyclerView();
         initNewsGetter();
         currentTopic = (String) spinner.getSelectedItem();
-        queryNews();
+        getSupportActionBar().setTitle(currentTopic);
+
+        if (savedInstanceState != null) {
+            isDialog = savedInstanceState.getBoolean(KEY_DIALOG);
+            Parcelable[] parcelables = savedInstanceState.getParcelableArray(KEY_NEWS);
+            List<Article> articles = new ArrayList<>();
+            for (Parcelable a : parcelables)
+                articles.add((Article) a);
+            rvAdapter.changeDataSet(articles);
+        } else
+            queryNews();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        List<Article> articles = rvAdapter.getArticles();
+        Article[] tmp = new Article[articles.size()];
+        for (int i = 0; i < tmp.length; i++) {
+            tmp[i] = articles.get(i);
+        }
+        outState.putParcelableArray(KEY_NEWS, tmp);
+        outState.putBoolean(KEY_DIALOG, isDialog);
     }
 
     private void initSpinner() {
@@ -73,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 currentTopic = (String) adapterView.getSelectedItem();
+                getSupportActionBar().setTitle(currentTopic);
                 queryNews();
             }
 
@@ -91,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int position = rvNews.getChildAdapterPosition(view);
-                Article article = rvAdapter.getArticle(position);
+                Article article = rvAdapter.getArticleOnPosition(position);
                 intent.putExtra(ArticleActivity.EXTRA_ARTICLE, article);
                 startActivity(intent);
             }
@@ -116,10 +139,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void onFailure(Throwable t) {
-//                TODO: add alert dialog
                 FragmentManager manager = getSupportFragmentManager();
                 prepareUi(false);
-                connErrDialog.show(manager, "com.legion1900.simplenews");
+                if (!isDialog) {
+                    isDialog = true;
+                    connErrDialog.show(manager, TAG);
+                }
             }
         };
     }
@@ -134,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void queryNews() {
+    private void queryNews() {
         if (getter != null && currentTopic != null)
             getter.query(currentTopic, getCurrentDate());
     }
@@ -152,5 +177,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         swipeContainer.setRefreshing(isLoading);
+    }
+
+    public void onDialogPositiveClick() {
+        queryNews();
+        isDialog = false;
     }
 }
