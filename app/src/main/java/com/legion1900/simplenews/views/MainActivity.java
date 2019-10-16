@@ -2,8 +2,8 @@ package com.legion1900.simplenews.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,14 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/*
- * TODO: pull to refresh should accept q=topic as a parameter so that the last part could reuse same method
- * */
-
-/*
- * TODO: read notes about dialog on loading
- *  */
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String STUB = "Software";
@@ -38,9 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private NewsGetter getter;
-
     private NewsAdapter rvAdapter;
+
     private RecyclerView rvNews;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,37 +43,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(STUB);
 
+        progressBar = findViewById(R.id.pb_progress);
         initRecyclerView();
         initNewsGetter();
-        getter.query(STUB.toLowerCase(), getCurrentDate());
-    }
-
-    private void initNewsGetter() {
-        getter = new NewsGetter(BuildConfig.apiKey) {
-            @Override
-            protected void onQueryStart() {
-                Toast.makeText(
-                        MainActivity.this,
-                        "Query started",
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
-
-            @Override
-            protected void onQueryResult(News news) {
-                ArrayList<Article> articles = news.getArticles();
-                rvAdapter.changeDataSet(articles);
-            }
-
-            @Override
-            protected void onFailure(Throwable t) {
-                Toast.makeText(
-                        MainActivity.this,
-                        "Connection error",
-                        Toast.LENGTH_LONG
-                ).show();
-            }
-        };
+        queryNews(STUB.toLowerCase());
     }
 
     private void initRecyclerView() {
@@ -100,8 +66,48 @@ public class MainActivity extends AppCompatActivity {
         rvNews.setAdapter(rvAdapter);
     }
 
+    private void initNewsGetter() {
+        getter = new NewsGetter(BuildConfig.apiKey) {
+            @Override
+            protected void onQueryStart() {
+                setUiState(true);
+            }
+
+            @Override
+            protected void onQueryResult(News news) {
+                setUiState(false);
+                ArrayList<Article> articles = news.getArticles();
+                rvAdapter.changeDataSet(articles);
+            }
+
+            @Override
+            protected void onFailure(Throwable t) {
+                Toast.makeText(
+                        MainActivity.this,
+                        "Connection error",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        };
+    }
+
+    private void queryNews(String topic) {
+        if (getter != null)
+            getter.query(topic, getCurrentDate());
+    }
+
     private String getCurrentDate() {
         Date today = new Date();
         return FORMAT.format(today);
+    }
+
+    private void setUiState(boolean isLoading) {
+        if (isLoading) {
+            rvNews.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            rvNews.setVisibility(View.VISIBLE);
+        }
     }
 }
