@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="topics">
+        <item>@string/topic_name_software</item>
+        <item>@string/topic_name_cybersecurity</item>
+        <item>@string/topic_name_cinema</item>
+        <item>@string/topic_name_sport</item>
+        <item>@string/topic_name_politics</item>
+    </string-array>
+
+</resources>

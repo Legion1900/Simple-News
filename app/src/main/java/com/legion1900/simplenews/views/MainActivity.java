@@ -3,6 +3,8 @@ package com.legion1900.simplenews.views;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView rvNews;
+    private Spinner spinner;
 
-    private String currentTopic = STUB.toLowerCase();
+    private String currentTopic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +49,29 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(STUB);
         swipeContainer = findViewById(R.id.swipeContainer);
 
+        initSpinner();
         initSwipeRefresh();
         initRecyclerView();
         initNewsGetter();
+        currentTopic = (String) spinner.getSelectedItem();
         queryNews(currentTopic);
+    }
+
+    private void initSpinner() {
+        spinner = findViewById(R.id.topics);
+        spinner.setSelection(0, false);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                currentTopic = (String)adapterView.getSelectedItem();
+                queryNews(currentTopic);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void initRecyclerView() {
