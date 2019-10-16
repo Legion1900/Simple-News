@@ -1,4 +1,4 @@
-package com.legion1900.simplenews.views;
+package com.legion1900.simplenews.views.activities;
 
 import android.content.Intent;
 import android.content.res.Resources;

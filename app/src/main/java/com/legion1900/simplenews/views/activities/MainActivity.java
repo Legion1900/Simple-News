@@ -1,19 +1,26 @@
-package com.legion1900.simplenews.views;
+package com.legion1900.simplenews.views.activities;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.legion1900.simplenews.BuildConfig;
+import com.legion1900.simplenews.ConnectionErrorDialog;
 import com.legion1900.simplenews.R;
 import com.legion1900.simplenews.networking.NewsGetter;
 import com.legion1900.simplenews.networking.data.Article;
@@ -38,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvNews;
     private Spinner spinner;
 
+    private DialogFragment connErrDialog = new ConnectionErrorDialog();
+
     private String currentTopic;
 
     @Override
@@ -54,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         initRecyclerView();
         initNewsGetter();
         currentTopic = (String) spinner.getSelectedItem();
-        queryNews(currentTopic);
+        queryNews();
     }
 
     private void initSpinner() {
@@ -63,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                currentTopic = (String)adapterView.getSelectedItem();
-                queryNews(currentTopic);
+                currentTopic = (String) adapterView.getSelectedItem();
+                queryNews();
             }
 
             @Override
@@ -108,12 +117,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onFailure(Throwable t) {
 //                TODO: add alert dialog
-                Toast.makeText(
-                        MainActivity.this,
-                        "Connection error",
-                        Toast.LENGTH_LONG
-                ).show();
+                FragmentManager manager = getSupportFragmentManager();
                 prepareUi(false);
+                connErrDialog.show(manager, "com.legion1900.simplenews");
             }
         };
     }
@@ -123,14 +129,14 @@ public class MainActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                queryNews(currentTopic);
+                queryNews();
             }
         });
     }
 
-    private void queryNews(String topic) {
-        if (getter != null)
-            getter.query(topic, getCurrentDate());
+    public void queryNews() {
+        if (getter != null && currentTopic != null)
+            getter.query(currentTopic, getCurrentDate());
     }
 
     private String getCurrentDate() {
