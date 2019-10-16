@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.legion1900.simplenews.BuildConfig;
 import com.legion1900.simplenews.R;
@@ -32,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private NewsGetter getter;
     private NewsAdapter rvAdapter;
 
+    private SwipeRefreshLayout swipeContainer;
     private RecyclerView rvNews;
-    private ProgressBar progressBar;
+
+    private String currentTopic = STUB.toLowerCase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +45,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(STUB);
+        swipeContainer = findViewById(R.id.swipeContainer);
 
-        progressBar = findViewById(R.id.pb_progress);
+        initSwipeRefresh();
         initRecyclerView();
         initNewsGetter();
-        queryNews(STUB.toLowerCase());
+        queryNews(currentTopic);
     }
 
     private void initRecyclerView() {
@@ -70,18 +74,19 @@ public class MainActivity extends AppCompatActivity {
         getter = new NewsGetter(BuildConfig.apiKey) {
             @Override
             protected void onQueryStart() {
-                setUiState(true);
+                updateUI(true);
             }
 
             @Override
             protected void onQueryResult(News news) {
-                setUiState(false);
                 ArrayList<Article> articles = news.getArticles();
                 rvAdapter.changeDataSet(articles);
+                updateUI(false);
             }
 
             @Override
             protected void onFailure(Throwable t) {
+//                TODO: add alert dialog
                 Toast.makeText(
                         MainActivity.this,
                         "Connection error",
@@ -89,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
                 ).show();
             }
         };
+    }
+
+    private void initSwipeRefresh() {
+        swipeContainer = findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                queryNews(currentTopic);
+            }
+        });
     }
 
     private void queryNews(String topic) {
@@ -101,13 +116,13 @@ public class MainActivity extends AppCompatActivity {
         return FORMAT.format(today);
     }
 
-    private void setUiState(boolean isLoading) {
+    private void updateUI(boolean isLoading) {
         if (isLoading) {
             rvNews.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
         } else {
-            progressBar.setVisibility(View.GONE);
             rvNews.setVisibility(View.VISIBLE);
         }
+
+        swipeContainer.setRefreshing(isLoading);
     }
 }

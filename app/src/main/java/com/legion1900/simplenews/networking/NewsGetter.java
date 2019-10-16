@@ -17,9 +17,10 @@ public abstract class NewsGetter {
 
     private static final String KEY_TOPIC = "q";
     private static final String KEY_DATE = "from";
+    private static final String KEY_SORT = "sortBy";
     private static final String KEY_API_KEY = "apiKey";
 
-    private static final String TAG = "NewsGetter";
+    private static final String VALUE_SORT = "publishedAt";
 
     private NewsService newsService;
     private Callback<News> callback;
@@ -51,6 +52,7 @@ public abstract class NewsGetter {
         final Map<String, String> query = new HashMap<>();
         query.put(KEY_TOPIC, topic);
         query.put(KEY_DATE, date);
+        query.put(KEY_SORT, VALUE_SORT);
         query.put(KEY_API_KEY, apiKey);
 
         onQueryStart();

@@ -18,7 +18,6 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
 
     private List<Article> news;
-    private StringBuilder builder = new StringBuilder();
     private Resources r;
     private View.OnClickListener itemClickListener;
 
@@ -60,7 +59,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
     }
 
     public void changeDataSet(List<Article> newData) {
-        news = newData;
+        news.clear();
+        news.addAll(newData);
         notifyDataSetChanged();
     }
 
