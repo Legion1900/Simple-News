@@ -60,7 +60,7 @@ public class ArticleActivity extends AppCompatActivity {
         Article article = intent.getParcelableExtra(EXTRA_ARTICLE);
         if (article != null) {
             String imgUrl = article.getUrlToImage();
-            if (imgUrl == null) {
+            if (imgUrl == null || imgUrl.isEmpty()) {
                 blockPicasso.setVisibility(View.GONE);
                 blockGlide.setVisibility(View.GONE);
             }
