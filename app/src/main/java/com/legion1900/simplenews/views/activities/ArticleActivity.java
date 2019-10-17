@@ -33,6 +33,7 @@ public class ArticleActivity extends AppCompatActivity {
     private TextView description;
 
     private Picasso picasso = Picasso.get();
+    private RequestManager glide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class ArticleActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        glide = Glide.with(this);
         initViews();
     }
 
@@ -67,7 +69,7 @@ public class ArticleActivity extends AppCompatActivity {
                         .placeholder(R.drawable.ic_image_24dp)
                         .error(R.drawable.ic_broken_image_24dp)
                         .into(imagePicasso);
-                Glide.with(this).load(imgUrl)
+                glide.load(imgUrl)
                         .placeholder(R.drawable.ic_image_24dp)
                         .error(R.drawable.ic_broken_image_24dp)
                         .into(imageGlide);
