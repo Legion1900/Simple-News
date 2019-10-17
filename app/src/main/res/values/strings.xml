@@ -13,4 +13,6 @@
     <string name="topic_name_politics">Politics</string>
     <string name="conn_err">Problems with connection has occurred</string>
     <string name="retry">Try again</string>
+    <string name="loaded_with_picasso">Loaded with Picasso</string>
+    <string name="loaded_with_glide">Loaded with Glide</string>
 </resources>
