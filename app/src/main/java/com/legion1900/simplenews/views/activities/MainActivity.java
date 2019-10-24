@@ -1,6 +1,8 @@
 package com.legion1900.simplenews.views.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
@@ -107,21 +109,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView() {
+        final Intent intent = new Intent(this, ArticleActivity.class);
         List<Article> empty = new ArrayList<>();
         rvNews = findViewById(R.id.rv_news);
-        final Intent intent = new Intent(this, ArticleActivity.class);
         rvAdapter = new NewsAdapter(getResources(), empty, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int position = rvNews.getChildAdapterPosition(view);
-                Article article = rvAdapter.getArticleOnPosition(position);
-                intent.putExtra(ArticleActivity.EXTRA_ARTICLE, article);
-                startActivity(intent);
+                onRvItemClick(view, intent);
             }
         });
         rvNews.setLayoutManager(new LinearLayoutManager(this));
         rvNews.setAdapter(rvAdapter);
     }
+
+    /*
+     * RecyclerView item`s click listener.
+     * */
+    private void onRvItemClick(View view, Intent intent) {
+        int position = rvNews.getChildAdapterPosition(view);
+        Article article = rvAdapter.getArticleOnPosition(position);
+        intent.putExtra(ArticleActivity.EXTRA_ARTICLE, article);
+//        Bundle animOptions = prepareAnimationOptions(view);
+//        startActivity(intent, animOptions);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Bundle options = ActivityOptions.makeSceneTransitionAnimation(
+                    this,
+                    view,
+                    view.getTransitionName())
+                    .toBundle();
+            startActivity(intent, options);
+        } else
+            startActivity(intent);
+    }
+
+//    private Bundle prepareAnimationOptions(View view) {
+//        int x, y;
+//        x = y = 0;
+//        int width = view.getWidth();
+//        int height = view.getHeight();
+//        return ActivityOptions.makeScaleUpAnimation(view, x, y, width, height).toBundle();
+//    }
 
     private void initNewsGetter() {
         getter = new NewsGetter(BuildConfig.apiKey) {

@@ -15,4 +15,5 @@
     <string name="retry">Try again</string>
     <string name="loaded_with_picasso">Loaded with Picasso</string>
     <string name="loaded_with_glide">Loaded with Glide</string>
+    <string name="transition_article">article</string>
 </resources>

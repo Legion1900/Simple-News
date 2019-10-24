@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ArticleTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/shared_article
+        </item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/shared_article
+        </item>
+    </style>
+</resources>
